@@ -831,6 +831,13 @@ binder::Status CameraService::connectHelper(const sp<CALLBACK>& cameraCb, const 
 
     int originalClientPid = 0;
 
+    // HTC camera hal provides different settings depending on which app is using the camera
+    // this causes htc camera app to crash because of missing dependencies, lets change halVersion
+    // to default to allow htc camera app to run.
+    if (halVersion == 256) {
+        halVersion = -1;
+    }
+
     ALOGI("CameraService::connect call (PID %d \"%s\", camera ID %s) for HAL version %s and "
             "Camera API version %d", clientPid, clientName8.string(), cameraId.string(),
             (halVersion == -1) ? "default" : std::to_string(halVersion).c_str(),
